@@ -51,5 +51,23 @@ config = {
 
 def get_config():
     """Get configuration based on environment"""
-    config_name = os.environ.get('FLASK_ENV', 'default')
+    # Check for FLASK_ENV first (deprecated but still used by some platforms)
+    config_name = os.environ.get('FLASK_ENV')
+    
+    # If FLASK_ENV is not set, check for other environment indicators
+    if not config_name:
+        if os.environ.get('RENDER') or os.environ.get('RAILWAY_ENVIRONMENT') or os.environ.get('HEROKU'):
+            config_name = 'production'
+        else:
+            config_name = 'development'
+    
+    # Ensure config_name is valid
+    if config_name not in config:
+        config_name = 'default'
+    
+    # Debug logging
+    print(f"🔧 Config: FLASK_ENV={os.environ.get('FLASK_ENV')}")
+    print(f"🔧 Config: RENDER={os.environ.get('RENDER')}")
+    print(f"🔧 Config: Selected config={config_name}")
+    
     return config[config_name]
