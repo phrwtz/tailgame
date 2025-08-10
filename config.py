@@ -41,14 +41,6 @@ class TestingConfig(Config):
     TESTING = True
     SECRET_KEY = 'test-secret-key'
 
-# Configuration dictionary
-config = {
-    'development': DevelopmentConfig,
-    'production': ProductionConfig,
-    'testing': TestingConfig,
-    'default': DevelopmentConfig
-}
-
 def get_config():
     """Get configuration based on environment"""
     # Check for FLASK_ENV first (deprecated but still used by some platforms)
@@ -61,13 +53,15 @@ def get_config():
         else:
             config_name = 'development'
     
-    # Ensure config_name is valid
-    if config_name not in config:
-        config_name = 'default'
-    
     # Debug logging
     print(f"🔧 Config: FLASK_ENV={os.environ.get('FLASK_ENV')}")
     print(f"🔧 Config: RENDER={os.environ.get('RENDER')}")
     print(f"🔧 Config: Selected config={config_name}")
     
-    return config[config_name]
+    # Return the appropriate config class
+    if config_name == 'production':
+        return ProductionConfig
+    elif config_name == 'testing':
+        return TestingConfig
+    else:
+        return DevelopmentConfig
