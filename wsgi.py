@@ -9,12 +9,13 @@ import os
 os.environ['FLASK_ENV'] = 'production'
 
 # Import app after setting environment
-from app import app, socketio
+from app import app
+
+# For WSGI servers like Gunicorn
+application = app
 
 if __name__ == "__main__":
-    # Get port from environment (Render sets this automatically)
-    port = int(os.environ.get('PORT', 5001))
-    host = os.environ.get('HOST', '0.0.0.0')
-    
-    print(f"🚀 Starting production server on {host}:{port}")
-    socketio.run(app, host=host, port=port)
+    # This file is primarily for WSGI servers
+    # For direct execution, use app.py instead
+    print("🚀 WSGI entry point loaded")
+    print("📝 Use 'gunicorn wsgi:application' to run in production")
